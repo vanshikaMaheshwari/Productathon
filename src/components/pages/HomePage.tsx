@@ -1,4 +1,4 @@
-em// HPI 1.7-G
+// HPI 1.7-G
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { Image } from '@/components/ui/image';
