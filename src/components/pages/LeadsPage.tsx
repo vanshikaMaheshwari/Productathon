@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, Filter, TrendingUp, TrendingDown, Building2, MapPin, Star, Grid3x3, List } from 'lucide-react';
+import { Search, Filter, TrendingUp, TrendingDown, Building2, MapPin, Star, Grid3x3, List, ArrowLeft } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { BaseCrudService } from '@/integrations';
@@ -11,6 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import CompanyCard from '@/components/CompanyCard';
 
 export default function LeadsPage() {
+  const [searchParams] = useSearchParams();
+  const stateFilter = searchParams.get('state');
+  
   const [leads, setLeads] = useState<CustomerLeads[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -62,7 +65,8 @@ export default function LeadsPage() {
         lead.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         lead.industryType?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus = statusFilter === 'all' || lead.status?.toLowerCase() === statusFilter.toLowerCase();
-      return matchesSearch && matchesStatus;
+      const matchesState = !stateFilter || lead.plantLocations?.includes(stateFilter);
+      return matchesSearch && matchesStatus && matchesState;
     })
     .sort((a, b) => {
       if (sortBy === 'score') {
@@ -89,20 +93,31 @@ export default function LeadsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
+            {stateFilter && (
+              <Link to="/states">
+                <motion.button
+                  whileHover={{ x: -4 }}
+                  className="flex items-center gap-2 text-accent-teal font-paragraph text-sm hover:text-accent-teal/80 transition-colors mb-6"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back to States
+                </motion.button>
+              </Link>
+            )}
             <h1 className="font-heading text-5xl lg:text-6xl text-light-foreground mb-4">
               Lead <span className="text-accent-teal">Discovery</span>
             </h1>
             <p className="font-paragraph text-lg text-light-foreground/70 max-w-3xl">
-              Browse and filter discovered leads with intelligent scoring and geographic routing
+              {stateFilter ? `Leads in ${stateFilter}` : 'Browse and filter discovered leads with intelligent scoring and geographic routing'}
             </p>
           </motion.div>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
             {[
-              { label: 'Total Leads', value: leads.length.toString(), icon: Building2 },
-              { label: 'Hot Leads', value: leads.filter(l => l.status?.toLowerCase() === 'hot').length.toString(), icon: TrendingUp },
-              { label: 'Avg Score', value: (leads.reduce((acc, l) => acc + (l.leadScore || 0), 0) / leads.length || 0).toFixed(1), icon: Star },
+              { label: 'Total Leads', value: filteredLeads.length.toString(), icon: Building2 },
+              { label: 'Hot Leads', value: filteredLeads.filter(l => l.status?.toLowerCase() === 'hot').length.toString(), icon: TrendingUp },
+              { label: 'Avg Score', value: (filteredLeads.reduce((acc, l) => acc + (l.leadScore || 0), 0) / filteredLeads.length || 0).toFixed(1), icon: Star },
               { label: 'Conversion Rate', value: '34.2%', icon: TrendingDown }
             ].map((stat, idx) => (
               <motion.div

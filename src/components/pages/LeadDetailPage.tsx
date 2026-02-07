@@ -9,6 +9,8 @@ import { CustomerLeads } from '@/entities';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
+import WhatsAppOutreach from '@/components/WhatsAppOutreach';
+import FeedbackLoop from '@/components/FeedbackLoop';
 
 export default function LeadDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -340,6 +342,12 @@ export default function LeadDetailPage() {
                 </div>
               </div>
             </motion.div>
+
+            {/* WhatsApp Outreach */}
+            <WhatsAppOutreach lead={lead} />
+
+            {/* Feedback Loop */}
+            <FeedbackLoop lead={lead} />
 
             {/* Quick Actions */}
             <motion.div

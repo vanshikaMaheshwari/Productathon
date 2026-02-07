@@ -7,6 +7,7 @@ import LeadsPage from '@/components/pages/LeadsPage';
 import LeadDetailPage from '@/components/pages/LeadDetailPage';
 import DashboardPage from '@/components/pages/DashboardPage';
 import SourcesPage from '@/components/pages/SourcesPage';
+import StatesPage from '@/components/pages/StatesPage';
 
 // Layout component that includes ScrollToTop
 function Layout() {
@@ -57,6 +58,13 @@ const router = createBrowserRouter([
         element: <SourcesPage />,
         routeMetadata: {
           pageIdentifier: 'sources',
+        },
+      },
+      {
+        path: "states",
+        element: <StatesPage />,
+        routeMetadata: {
+          pageIdentifier: 'states',
         },
       },
       {
