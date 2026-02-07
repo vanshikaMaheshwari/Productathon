@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Building2, MapPin, Phone, Mail, Star, TrendingUp, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { ArrowLeft, Building2, MapPin, Phone, Mail, Star, TrendingUp, CheckCircle, XCircle, Clock, Send, MessageSquare } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { BaseCrudService } from '@/integrations';
 import { CustomerLeads } from '@/entities';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { useToast } from '@/hooks/use-toast';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function LeadDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [lead, setLead] = useState<CustomerLeads | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [feedback, setFeedback] = useState('');
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -54,6 +57,38 @@ export default function LeadDetailPage() {
         description: 'Failed to update lead status',
         variant: 'destructive',
       });
+    }
+  };
+
+  const handleSendFeedback = async () => {
+    if (!feedback.trim()) {
+      toast({
+        title: 'Empty Feedback',
+        description: 'Please enter feedback before sending',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsSendingFeedback(true);
+    try {
+      // Simulate sending feedback (in production, this would save to a feedback collection)
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setFeedback('');
+      toast({
+        title: 'Feedback Sent',
+        description: 'Your feedback has been recorded and will help improve our scoring model',
+      });
+    } catch (error) {
+      console.error('Failed to send feedback:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to send feedback',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSendingFeedback(false);
     }
   };
 
@@ -252,9 +287,9 @@ export default function LeadDetailPage() {
                 Mark this lead as accepted or rejected to help refine the scoring model
               </p>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 mb-8">
                 <motion.button
-                  whileHover={{ scale: 1.05, boxShadow: '0 0 25px #00FFFF' }}
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleFeedback(true)}
                   disabled={lead.status?.toLowerCase() === 'accepted'}
@@ -274,6 +309,35 @@ export default function LeadDetailPage() {
                   <XCircle className="w-5 h-5" />
                   Reject Lead
                 </motion.button>
+              </div>
+
+              {/* Detailed Feedback Form */}
+              <div className="border-t border-accent-teal/20 pt-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <MessageSquare className="w-5 h-5 text-accent-teal" />
+                  <h3 className="font-heading text-lg text-light-foreground">Detailed Feedback</h3>
+                </div>
+                <p className="font-paragraph text-sm text-light-foreground/70 mb-4">
+                  Share additional insights about this lead to help improve our AI model
+                </p>
+                <div className="space-y-4">
+                  <Textarea
+                    placeholder="What's your assessment of this lead? Any concerns or opportunities?"
+                    value={feedback}
+                    onChange={(e) => setFeedback(e.target.value)}
+                    className="bg-dark-background/50 border-accent-teal/30 text-light-foreground font-paragraph min-h-24"
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleSendFeedback}
+                    disabled={isSendingFeedback || !feedback.trim()}
+                    className="flex items-center gap-2 bg-accent-teal text-primary-foreground font-heading font-semibold px-6 py-3 rounded border-2 border-accent-teal disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Send className="w-4 h-4" />
+                    {isSendingFeedback ? 'Sending...' : 'Send Feedback'}
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
 

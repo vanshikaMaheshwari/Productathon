@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Users, Target, MapPin, Award, Activity } from 'lucide-react';
+import { TrendingUp, Users, Target, MapPin, Award, Activity, Zap, AlertCircle } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { BaseCrudService } from '@/integrations';
 import { CustomerLeads, RegionalOffices } from '@/entities';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, ScatterChart, Scatter } from 'recharts';
 
 export default function DashboardPage() {
   const [leads, setLeads] = useState<CustomerLeads[]>([]);
@@ -90,6 +90,13 @@ export default function DashboardPage() {
     .map(([name, value]) => ({ name, value }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 10);
+
+  // Lead score vs trust score scatter plot
+  const scatterData = leads.slice(0, 50).map(lead => ({
+    leadScore: lead.leadScore || 0,
+    trustScore: lead.trustScore || 0,
+    company: lead.companyName || 'Unknown'
+  }));
 
   return (
     <div className="min-h-screen bg-dark-background text-light-foreground">
@@ -323,6 +330,94 @@ export default function DashboardPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </motion.div>
+
+        {/* Lead Quality Heatmap */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="bg-dark-background/50 backdrop-blur-sm border border-muted-gray/30 rounded-lg p-8"
+        >
+          <h2 className="font-heading text-2xl text-light-foreground mb-6">Lead Quality Matrix</h2>
+          <p className="font-paragraph text-light-foreground/70 mb-6">Lead Score vs Trust Score Analysis</p>
+          <ResponsiveContainer width="100%" height={300}>
+            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#4A4A4A" />
+              <XAxis
+                type="number"
+                dataKey="leadScore"
+                name="Lead Score"
+                stroke="#E0E0E0"
+                tick={{ fill: '#E0E0E0', fontSize: 12, fontFamily: 'azeret-mono' }}
+              />
+              <YAxis
+                type="number"
+                dataKey="trustScore"
+                name="Trust Score"
+                stroke="#E0E0E0"
+                tick={{ fill: '#E0E0E0', fontSize: 12, fontFamily: 'azeret-mono' }}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#1A1A2E',
+                  border: '1px solid #00FFFF33',
+                  borderRadius: '8px',
+                  fontFamily: 'azeret-mono'
+                }}
+                cursor={{ strokeDasharray: '3 3' }}
+              />
+              <Scatter
+                name="Leads"
+                data={scatterData}
+                fill="#00FFFF"
+                fillOpacity={0.6}
+              />
+            </ScatterChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        {/* Top Opportunities */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="bg-dark-background/50 backdrop-blur-sm border border-muted-gray/30 rounded-lg p-8"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <Zap className="w-6 h-6 text-accent-teal" />
+            <h2 className="font-heading text-2xl text-light-foreground">Top Opportunities</h2>
+          </div>
+          
+          <div className="space-y-4">
+            {leads
+              .filter(l => l.leadScore && l.leadScore >= 70)
+              .sort((a, b) => (b.leadScore || 0) - (a.leadScore || 0))
+              .slice(0, 5)
+              .map((lead, idx) => (
+                <motion.div
+                  key={lead._id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: 0.7 + idx * 0.1 }}
+                  className="flex items-center justify-between p-4 bg-accent-teal/5 border border-accent-teal/20 rounded-lg"
+                >
+                  <div className="flex-1">
+                    <h3 className="font-heading text-lg text-light-foreground">{lead.companyName}</h3>
+                    <p className="font-paragraph text-sm text-light-foreground/70">{lead.industryType}</p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-right">
+                      <div className="font-paragraph text-xs text-light-foreground/70">Score</div>
+                      <div className="font-heading text-2xl text-accent-teal">{lead.leadScore}</div>
+                    </div>
+                    <div className="w-12 h-12 bg-accent-teal/10 rounded-full flex items-center justify-center">
+                      <TrendingUp className="w-6 h-6 text-accent-teal" />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
           </div>
         </motion.div>
       </section>

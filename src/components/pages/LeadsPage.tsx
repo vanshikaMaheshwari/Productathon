@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, Filter, TrendingUp, TrendingDown, Building2, MapPin, Star } from 'lucide-react';
+import { Search, Filter, TrendingUp, TrendingDown, Building2, MapPin, Star, Grid3x3, List } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { BaseCrudService } from '@/integrations';
 import { CustomerLeads } from '@/entities';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import CompanyCard from '@/components/CompanyCard';
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<CustomerLeads[]>([]);
@@ -17,6 +18,7 @@ export default function LeadsPage() {
   const [sortBy, setSortBy] = useState<string>('score');
   const [hasNext, setHasNext] = useState(false);
   const [nextSkip, setNextSkip] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   useEffect(() => {
     loadLeads();
@@ -125,7 +127,7 @@ export default function LeadsPage() {
 
       {/* Filters */}
       <section className="w-full max-w-[100rem] mx-auto px-8 py-8 border-b border-accent-teal/20">
-        <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4 items-end">
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent-teal" />
             <Input
@@ -160,71 +162,110 @@ export default function LeadsPage() {
               <SelectItem value="date">Last Updated</SelectItem>
             </SelectContent>
           </Select>
+
+          {/* View Mode Toggle */}
+          <div className="flex gap-2 bg-dark-background/50 border border-accent-teal/30 rounded p-1">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded transition-colors ${viewMode === 'grid' ? 'bg-accent-teal/20 text-accent-teal' : 'text-light-foreground/70 hover:text-light-foreground'}`}
+            >
+              <Grid3x3 className="w-5 h-5" />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded transition-colors ${viewMode === 'list' ? 'bg-accent-teal/20 text-accent-teal' : 'text-light-foreground/70 hover:text-light-foreground'}`}
+            >
+              <List className="w-5 h-5" />
+            </motion.button>
+          </div>
         </div>
       </section>
 
-      {/* Leads List */}
+      {/* Leads Grid/List */}
       <section className="w-full max-w-[100rem] mx-auto px-8 py-12 min-h-[600px]">
         {isLoading ? null : filteredLeads.length > 0 ? (
-          <div className="space-y-6">
-            {filteredLeads.map((lead, idx) => (
-              <motion.div
-                key={lead._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: idx * 0.05 }}
-              >
-                <Link to={`/leads/${lead._id}`}>
+          <div>
+            {viewMode === 'grid' ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredLeads.map((lead, idx) => (
                   <motion.div
-                    whileHover={{ x: 8, borderColor: '#00FFFF' }}
-                    className="bg-dark-background/50 backdrop-blur-sm border border-muted-gray/30 rounded-lg p-6 transition-all duration-300"
+                    key={lead._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: idx * 0.05 }}
                   >
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                      <div className="flex-1 space-y-3">
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <h3 className="font-heading text-xl text-light-foreground mb-2">
-                              {lead.companyName || 'Unnamed Company'}
-                            </h3>
-                            <div className="flex flex-wrap items-center gap-4 text-sm">
-                              <span className="font-paragraph text-light-foreground/70">
-                                {lead.industryType || 'Unknown Industry'}
+                    <Link to={`/leads/${lead._id}`}>
+                      <CompanyCard lead={lead} />
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {filteredLeads.map((lead, idx) => (
+                  <motion.div
+                    key={lead._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: idx * 0.05 }}
+                  >
+                    <Link to={`/leads/${lead._id}`}>
+                      <motion.div
+                        whileHover={{ x: 8, borderColor: '#00FFFF' }}
+                        className="bg-dark-background/50 backdrop-blur-sm border border-muted-gray/30 rounded-lg p-6 transition-all duration-300"
+                      >
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                          <div className="flex-1 space-y-3">
+                            <div className="flex items-start justify-between gap-4">
+                              <div>
+                                <h3 className="font-heading text-xl text-light-foreground mb-2">
+                                  {lead.companyName || 'Unnamed Company'}
+                                </h3>
+                                <div className="flex flex-wrap items-center gap-4 text-sm">
+                                  <span className="font-paragraph text-light-foreground/70">
+                                    {lead.industryType || 'Unknown Industry'}
+                                  </span>
+                                  {lead.plantLocations && (
+                                    <span className="flex items-center gap-2 font-paragraph text-light-foreground/70">
+                                      <MapPin className="w-4 h-4 text-accent-teal" />
+                                      {lead.plantLocations}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <span className={`px-3 py-1 rounded border font-paragraph text-xs uppercase tracking-wider whitespace-nowrap ${getStatusColor(lead.status)}`}>
+                                {lead.status || 'Unknown'}
                               </span>
-                              {lead.plantLocations && (
-                                <span className="flex items-center gap-2 font-paragraph text-light-foreground/70">
-                                  <MapPin className="w-4 h-4 text-accent-teal" />
-                                  {lead.plantLocations}
-                                </span>
-                              )}
+                            </div>
+
+                            {lead.productRecommendations && (
+                              <p className="font-paragraph text-sm text-light-foreground/70 line-clamp-2">
+                                {lead.productRecommendations}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="flex lg:flex-col items-center lg:items-end gap-6 lg:gap-4">
+                            <div className="text-center lg:text-right">
+                              <div className="font-paragraph text-xs text-light-foreground/70 mb-1">Lead Score</div>
+                              <div className="font-heading text-3xl text-accent-teal">{lead.leadScore || 0}</div>
+                            </div>
+                            <div className="text-center lg:text-right">
+                              <div className="font-paragraph text-xs text-light-foreground/70 mb-1">Trust Score</div>
+                              <div className="font-heading text-3xl text-accent-magenta">{lead.trustScore || 0}</div>
                             </div>
                           </div>
-                          <span className={`px-3 py-1 rounded border font-paragraph text-xs uppercase tracking-wider whitespace-nowrap ${getStatusColor(lead.status)}`}>
-                            {lead.status || 'Unknown'}
-                          </span>
                         </div>
-
-                        {lead.productRecommendations && (
-                          <p className="font-paragraph text-sm text-light-foreground/70 line-clamp-2">
-                            {lead.productRecommendations}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="flex lg:flex-col items-center lg:items-end gap-6 lg:gap-4">
-                        <div className="text-center lg:text-right">
-                          <div className="font-paragraph text-xs text-light-foreground/70 mb-1">Lead Score</div>
-                          <div className="font-heading text-3xl text-accent-teal">{lead.leadScore || 0}</div>
-                        </div>
-                        <div className="text-center lg:text-right">
-                          <div className="font-paragraph text-xs text-light-foreground/70 mb-1">Trust Score</div>
-                          <div className="font-heading text-3xl text-accent-magenta">{lead.trustScore || 0}</div>
-                        </div>
-                      </div>
-                    </div>
+                      </motion.div>
+                    </Link>
                   </motion.div>
-                </Link>
-              </motion.div>
-            ))}
+                ))}
+              </div>
+            )}
 
             {hasNext && (
               <div className="flex justify-center pt-8">
