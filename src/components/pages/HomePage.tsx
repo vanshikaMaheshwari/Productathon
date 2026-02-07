@@ -1,26 +1,25 @@
-// HPI 1.7-G
-import React, { useRef, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion';
-import { 
-  Database, 
-  TrendingUp, 
-  MapPin, 
-  Target, 
-  Zap, 
-  Shield, 
-  ChevronRight, 
-  Activity, 
-  Globe, 
-  Lock, 
-  Cpu, 
-  Server,
-  Radio,
-  ArrowRight
-} from 'lucide-react';
-import Header from '@/components/Header';
+em// HPI 1.7-G
 import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 import { Image } from '@/components/ui/image';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import {
+  Activity,
+  ArrowRight,
+  ChevronRight,
+  Cpu,
+  Database,
+  Globe,
+  MapPin,
+  Radio,
+  Server,
+  Shield,
+  Target,
+  TrendingUp,
+  Zap
+} from 'lucide-react';
+import { useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 // --- CANONICAL DATA SOURCES ---
 // Preserved from original code and expanded with strict adherence to the Data Fidelity Protocol.
@@ -102,11 +101,11 @@ const SectionDivider = () => (
 );
 
 const GlowingOrb = ({ color = "teal", className = "" }: { color?: "teal" | "magenta", className?: string }) => (
-  <div 
+  <div
     className={`absolute rounded-full blur-[100px] opacity-20 pointer-events-none ${className}`}
-    style={{ 
+    style={{
       background: color === "teal" ? "#00FFFF" : "#FF00FF",
-    }} 
+    }}
   />
 );
 
@@ -125,9 +124,9 @@ export default function HomePage() {
       {/* GLOBAL BACKGROUND GRID */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-        <motion.div 
+        <motion.div
           style={{ y: backgroundY }}
-          className="absolute top-0 left-0 w-full h-[120%] bg-[radial-gradient(circle_800px_at_50%_200px,rgba(0,255,255,0.03),transparent)]" 
+          className="absolute top-0 left-0 w-full h-[120%] bg-[radial-gradient(circle_800px_at_50%_200px,rgba(0,255,255,0.03),transparent)]"
         />
       </div>
 
@@ -137,7 +136,7 @@ export default function HomePage() {
         <GlowingOrb color="magenta" className="bottom-[-10%] left-[-5%] w-[500px] h-[500px]" />
 
         <div className="relative z-10 w-full max-w-[100rem] mx-auto grid lg:grid-cols-12 gap-12 items-center">
-          
+
           {/* Hero Content */}
           <div className="lg:col-span-7 space-y-10">
             <motion.div
@@ -152,7 +151,7 @@ export default function HomePage() {
               </span>
             </motion.div>
 
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
@@ -165,18 +164,18 @@ export default function HomePage() {
               for Intelligence
             </motion.h1>
 
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               className="font-paragraph text-base md:text-lg text-muted-gray-foreground/80 max-w-2xl leading-relaxed border-l-2 border-accent-teal/20 pl-6"
             >
-              Transform complex public signals into actionable sales vectors. 
-              Our advanced system monitors, profiles, and routes opportunities with 
+              Transform complex public signals into actionable sales vectors.
+              Our advanced system monitors, profiles, and routes opportunities with
               <span className="text-accent-teal"> algorithmic precision</span>.
             </motion.p>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
@@ -187,7 +186,7 @@ export default function HomePage() {
                 <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 <div className="absolute inset-0 -z-10 bg-accent-teal/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </Link>
-              
+
               <Link to="/dashboard" className="group inline-flex items-center justify-center px-8 py-4 font-heading font-bold text-light-foreground transition-all duration-200 bg-transparent border border-muted-gray hover:border-accent-magenta rounded-sm focus:outline-none">
                 <span className="mr-2 group-hover:text-accent-magenta transition-colors">View Dashboard</span>
                 <Activity className="w-5 h-5 text-muted-gray group-hover:text-accent-magenta transition-colors" />
@@ -208,7 +207,7 @@ export default function HomePage() {
               <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-accent-teal" />
               <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-accent-teal" />
               <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-accent-teal" />
-              
+
               <div className="flex items-center justify-between mb-8 border-b border-white/5 pb-4">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-accent-teal rounded-full animate-pulse" />
@@ -236,7 +235,7 @@ export default function HomePage() {
                     </div>
                     {/* Progress Bar Simulation */}
                     <div className="absolute bottom-0 left-0 h-1 bg-accent-teal/20 w-full">
-                      <motion.div 
+                      <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.random() * 60 + 40}%` }}
                         transition={{ duration: 1.5, delay: 0.5 + idx * 0.1 }}
@@ -247,7 +246,7 @@ export default function HomePage() {
                 ))}
               </div>
             </motion.div>
-            
+
             {/* Background Abstract Graphic */}
             <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] opacity-30">
                <div className="w-full h-full border border-accent-teal/10 rounded-full animate-[spin_20s_linear_infinite]" />
@@ -257,7 +256,7 @@ export default function HomePage() {
         </div>
 
         {/* Scroll Indicator */}
-        <motion.div 
+        <motion.div
           style={{ opacity: opacityFade }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
@@ -299,7 +298,7 @@ export default function HomePage() {
                   ))}
                 </div>
               </div>
-              
+
               {/* Decorative Code Block */}
               <div className="hidden lg:block p-6 rounded-lg bg-black/40 border border-white/5 font-paragraph text-xs text-muted-gray overflow-hidden">
                 <div className="flex gap-2 mb-2">
@@ -330,7 +329,7 @@ export default function HomePage() {
       {/* --- FULL BLEED IMAGE BREAK --- */}
       <section className="relative w-full h-[80vh] my-24 overflow-hidden group">
         <div className="absolute inset-0 bg-black/40 z-10 group-hover:bg-black/20 transition-colors duration-700" />
-        <Image 
+        <Image
           src="https://static.wixstatic.com/media/bbfd4e_319342d2c5c24b03a3968e8f490b1355~mv2.png?originWidth=1280&originHeight=704"
           alt="Global Data Network Visualization"
           className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-[2s] ease-out"
@@ -381,7 +380,7 @@ export default function HomePage() {
               className="group relative h-full"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-accent-teal/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl" />
-              
+
               <div className="relative h-full bg-dark-background border border-white/10 p-8 rounded-xl hover:border-accent-teal/40 transition-colors duration-300 flex flex-col">
                 <div className="mb-6 flex justify-between items-start">
                   <div className="p-3 bg-white/5 rounded-lg text-accent-teal group-hover:bg-accent-teal group-hover:text-black transition-all duration-300">
@@ -391,7 +390,7 @@ export default function HomePage() {
                     {item.step}
                   </span>
                 </div>
-                
+
                 <h3 className="font-heading text-xl font-bold mb-3 text-light-foreground group-hover:text-accent-teal transition-colors">
                   {item.title}
                 </h3>
@@ -413,7 +412,7 @@ export default function HomePage() {
       <section className="relative w-full py-32 px-6 overflow-hidden">
         <div className="absolute inset-0 bg-accent-teal/5" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.1),transparent_70%)]" />
-        
+
         <div className="relative z-10 max-w-5xl mx-auto text-center">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -424,17 +423,17 @@ export default function HomePage() {
           >
             <span className="font-paragraph text-xs text-accent-magenta tracking-widest uppercase">System Ready</span>
           </motion.div>
-          
+
           <h2 className="font-heading text-5xl md:text-7xl font-bold text-light-foreground mb-8 leading-tight">
             Ready to Deploy <br />
             <span className="text-accent-teal">Intelligence?</span>
           </h2>
-          
+
           <p className="font-paragraph text-lg md:text-xl text-muted-gray-foreground/70 mb-12 max-w-2xl mx-auto">
-            Join the network of precision-engineered sales teams. 
+            Join the network of precision-engineered sales teams.
             Start discovering qualified leads today.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link to="/leads">
               <motion.button
@@ -479,17 +478,17 @@ function FeatureCard({ feature, index }: { feature: typeof FEATURES_DATA[0], ind
     >
       <Link to={feature.link} className="block">
         <div className="relative overflow-hidden rounded-2xl bg-dark-background border border-white/10 p-8 md:p-10 transition-all duration-300 hover:border-accent-teal/50 hover:shadow-[0_0_30px_-10px_rgba(0,255,255,0.15)]">
-          
+
           {/* Hover Gradient Background */}
           <div className="absolute inset-0 bg-gradient-to-r from-accent-teal/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          
+
           <div className="relative z-10 flex flex-col md:flex-row gap-6 md:items-center">
             <div className="flex-shrink-0">
               <div className="w-16 h-16 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-accent-teal group-hover:bg-accent-teal/10 transition-all duration-300">
                 <feature.icon className="w-8 h-8 text-light-foreground group-hover:text-accent-teal transition-colors" />
               </div>
             </div>
-            
+
             <div className="flex-grow">
               <div className="flex items-center gap-3 mb-2">
                 <span className="font-paragraph text-xs text-accent-teal uppercase tracking-wider">{feature.category}</span>
