@@ -439,7 +439,7 @@ export default function HomePage() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-10 py-5 bg-accent-teal text-black font-heading font-bold text-lg rounded-sm shadow-[0_0_30px_-5px_rgba(0,255,255,0.4)] hover:shadow-[0_0_50px_-5px_rgba(0,255,255,0.6)] transition-shadow"
+                className="px-10 py-5 bg-accent-teal text-black font-heading font-bold text-lg rounded-sm hover:bg-accent-teal/90 transition-colors"
               >
                 Launch Dashboard
               </motion.button>
