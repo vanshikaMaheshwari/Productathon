@@ -81,33 +81,52 @@ Contact: ${lead.contactInformation || 'N/A'}`;
   }
 
   /**
-   * Send WhatsApp message via API
-   * This is a placeholder - implement with your WhatsApp provider (Twilio, MessageBird, etc.)
+   * Send WhatsApp message via Twilio API
    */
   private async sendWhatsAppMessage(
     toPhone: string,
     message: string
   ): Promise<{ success: boolean; messageId?: string }> {
     try {
-      // TODO: Implement actual WhatsApp API integration
-      // Example with Twilio:
-      // const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-      // const response = await client.messages.create({
-      //   from: 'whatsapp:+1234567890',
-      //   to: `whatsapp:${toPhone}`,
-      //   body: message
-      // });
-      
-      // For now, log the message that would be sent
-      console.log('WhatsApp message would be sent to:', toPhone);
-      console.log('Message:', message);
-      
-      // Simulate successful send
-      return { success: true, messageId: `msg_${Date.now()}` };
+      // Validate phone number format (E.164)
+      if (!this.isValidPhoneNumber(toPhone)) {
+        console.error('Invalid phone number format:', toPhone);
+        return { success: false };
+      }
+
+      // Call Twilio API via backend endpoint
+      const response = await fetch('/api/whatsapp/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          toPhone,
+          message,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Twilio API error:', errorData);
+        return { success: false };
+      }
+
+      const data = await response.json();
+      return { success: true, messageId: data.messageId };
     } catch (error) {
       console.error('WhatsApp API error:', error);
       return { success: false };
     }
+  }
+
+  /**
+   * Validate phone number in E.164 format
+   */
+  private isValidPhoneNumber(phone: string): boolean {
+    // E.164 format: +[1-3]([0-9]{1,14})
+    const e164Regex = /^\+[1-9]\d{1,14}$/;
+    return e164Regex.test(phone);
   }
 
   /**

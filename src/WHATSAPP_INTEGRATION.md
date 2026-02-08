@@ -126,60 +126,71 @@ Contact: [Contact Information]
 
 ## API Integration
 
-### Setting Up WhatsApp API
+### Twilio Integration (Implemented)
 
-The service is designed to work with WhatsApp Business API providers. Currently, it includes a placeholder for integration with:
+The WhatsApp service is now integrated with **Twilio** as the primary provider. This integration:
 
-- **Twilio** (recommended)
-- **MessageBird**
-- **AWS SNS**
-- **Custom WhatsApp Business API**
+- ✅ Sends WhatsApp messages via Twilio API
+- ✅ Validates phone numbers in E.164 format
+- ✅ Handles errors gracefully with fallback logging
+- ✅ Supports both sandbox (testing) and production environments
 
 ### Configuration
 
-To enable actual WhatsApp sending, update `/src/services/whatsapp-service.ts`:
+#### Step 1: Set Up Twilio Account
 
-#### Example: Twilio Integration
+1. Create a free account at [twilio.com](https://www.twilio.com)
+2. Get your Account SID and Auth Token from the console
+3. Set up WhatsApp sandbox or production account
 
-```typescript
-import twilio from 'twilio';
+#### Step 2: Configure Environment Variables
 
-private async sendWhatsAppMessage(
-  toPhone: string,
-  message: string
-): Promise<{ success: boolean; messageId?: string }> {
-  try {
-    const client = twilio(
-      process.env.TWILIO_ACCOUNT_SID,
-      process.env.TWILIO_AUTH_TOKEN
-    );
-
-    const response = await client.messages.create({
-      from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
-      to: `whatsapp:${toPhone}`,
-      body: message
-    });
-
-    return { success: true, messageId: response.sid };
-  } catch (error) {
-    console.error('Twilio error:', error);
-    return { success: false };
-  }
-}
-```
-
-#### Environment Variables
+Add these to your `.env` file:
 
 ```env
-# Twilio
-TWILIO_ACCOUNT_SID=your_account_sid
-TWILIO_AUTH_TOKEN=your_auth_token
+# Twilio Configuration
+TWILIO_ACCOUNT_SID=your_account_sid_here
+TWILIO_AUTH_TOKEN=your_auth_token_here
 TWILIO_WHATSAPP_NUMBER=+1234567890
-
-# Or your preferred provider
-WHATSAPP_API_KEY=your_api_key
-WHATSAPP_SENDER_ID=your_sender_id
 ```
+
+#### Step 3: Test the Integration
+
+1. Navigate to `/create-lead`
+2. Fill in lead information
+3. Enable WhatsApp notification
+4. Enter recipient phone in E.164 format (e.g., +1234567890)
+5. Click "Create Lead & Notify"
+
+### How It Works
+
+The integration flow:
+
+1. **Frontend** (`CreateLeadPage.tsx`): User creates a lead and enables WhatsApp notification
+2. **Hook** (`use-lead-creation.ts`): Lead is created and notification is triggered
+3. **Service** (`whatsapp-service.ts`): Generates formatted message and calls API
+4. **API Call** (`sendWhatsAppMessage`): Sends request to `/api/whatsapp/send`
+5. **Backend Handler** (`whatsapp-handler.ts`): Validates and processes request
+6. **Twilio** (`twilio-config.ts`): Sends message via Twilio API
+7. **Recipient**: Receives WhatsApp message
+
+### Phone Number Format
+
+All phone numbers must be in **E.164 format**:
+- Format: `+[country code][number]`
+- Examples:
+  - USA: `+12025551234`
+  - India: `+919876543210`
+  - UK: `+441632960000`
+
+### Files Involved
+
+- `/src/services/whatsapp-service.ts` - Main WhatsApp service
+- `/src/services/twilio-config.ts` - Twilio configuration and helpers
+- `/src/services/whatsapp-handler.ts` - API request handler
+- `/src/hooks/use-lead-creation.ts` - Lead creation hook with notifications
+- `/src/components/pages/CreateLeadPage.tsx` - UI for creating leads
+- `/src/TWILIO_SETUP.md` - Detailed setup guide
 
 ## Fallback Notifications
 
