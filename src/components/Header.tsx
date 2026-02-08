@@ -11,6 +11,7 @@ export default function Header() {
     { path: '/', label: 'Home' },
     { path: '/states', label: 'States' },
     { path: '/leads', label: 'Leads' },
+    { path: '/create-lead', label: 'Create Lead' },
     { path: '/dashboard', label: 'Dashboard' },
     { path: '/sources', label: 'Sources' }
   ];
