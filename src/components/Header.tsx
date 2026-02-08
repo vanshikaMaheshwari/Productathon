@@ -29,7 +29,7 @@ export default function Header() {
               <Zap className="w-6 h-6 text-accent-teal" />
             </div>
             <span className="font-heading text-xl text-light-foreground">
-              Intelligence<span className="text-accent-teal">Hub</span>
+              The Square <span className="text-accent-teal">Lead</span>
             </span>
           </Link>
 

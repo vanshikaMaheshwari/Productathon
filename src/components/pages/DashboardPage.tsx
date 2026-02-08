@@ -75,21 +75,18 @@ export default function DashboardPage() {
     else scoreRanges[4].count++;
   });
 
-  // Regional distribution
+  // Regional distribution - include all states
   const regionMap = new Map<string, number>();
   offices.forEach(office => {
     const region = office.stateProvince || 'Unknown';
     const officeLeads = leads.filter(lead => 
       lead.plantLocations?.toLowerCase().includes(region.toLowerCase())
     ).length;
-    if (officeLeads > 0) {
-      regionMap.set(region, officeLeads);
-    }
+    regionMap.set(region, officeLeads);
   });
   const regionData = Array.from(regionMap.entries())
     .map(([name, value]) => ({ name, value }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 10);
+    .sort((a, b) => b.value - a.value);
 
   // Lead score vs trust score scatter plot
   const scatterData = leads.slice(0, 50).map(lead => ({
