@@ -13,7 +13,8 @@ export default function Header() {
     { path: '/leads', label: 'Leads' },
     { path: '/create-lead', label: 'Create Lead' },
     { path: '/dashboard', label: 'Dashboard' },
-    { path: '/sources', label: 'Sources' }
+    { path: '/sources', label: 'Sources' },
+    { path: '/feedback', label: 'Feedback' }
   ];
 
   const isActive = (path: string) => location.pathname === path;

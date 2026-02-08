@@ -9,6 +9,7 @@ import DashboardPage from '@/components/pages/DashboardPage';
 import SourcesPage from '@/components/pages/SourcesPage';
 import StatesPage from '@/components/pages/StatesPage';
 import CreateLeadPage from '@/components/pages/CreateLeadPage';
+import FeedbackManagementPage from '@/components/pages/FeedbackManagementPage';
 
 // Layout component that includes ScrollToTop
 function Layout() {
@@ -73,6 +74,13 @@ const router = createBrowserRouter([
         element: <CreateLeadPage />,
         routeMetadata: {
           pageIdentifier: 'create-lead',
+        },
+      },
+      {
+        path: "feedback",
+        element: <FeedbackManagementPage />,
+        routeMetadata: {
+          pageIdentifier: 'feedback-management',
         },
       },
       {

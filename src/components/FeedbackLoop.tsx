@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { CustomerLeads } from '@/entities';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { BaseCrudService } from '@/integrations';
 
 interface FeedbackLoopProps {
   lead: CustomerLeads;
@@ -78,10 +79,31 @@ export default function FeedbackLoop({ lead, onFeedbackSubmit }: FeedbackLoopPro
     setAnalysis(analysisResult);
     setIsAnalyzing(false);
 
-    toast({
-      title: 'Analysis Complete',
-      description: 'Feedback has been analyzed and will help improve future lead scoring',
-    });
+    // Save feedback to the leadfeedback collection
+    try {
+      await BaseCrudService.create('leadfeedback', {
+        _id: crypto.randomUUID(),
+        leadId: lead._id,
+        salesOfficerAction: action,
+        officerNotes: notes,
+        rootCauseAnalysis: analysisResult.rootCauseAnalysis,
+        weightAdjustment: parseFloat(analysisResult.weightAdjustment?.match(/-?\d+/)?.[0] || '0'),
+        revisedReasonCode: analysisResult.revisedReasonCode,
+        feedbackTimestamp: new Date(),
+      });
+
+      toast({
+        title: 'Analysis Complete',
+        description: 'Feedback has been analyzed and saved to improve future lead scoring',
+      });
+    } catch (error) {
+      console.error('Failed to save feedback:', error);
+      toast({
+        title: 'Analysis Complete',
+        description: 'Feedback has been analyzed but failed to save. Please try again.',
+        variant: 'destructive',
+      });
+    }
 
     if (onFeedbackSubmit) {
       onFeedbackSubmit(analysisResult as FeedbackData);

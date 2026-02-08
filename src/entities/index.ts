@@ -4,6 +4,29 @@
  */
 
 /**
+ * Collection ID: leadfeedback
+ * Interface for LeadFeedback
+ */
+export interface LeadFeedback {
+  _id: string;
+  _createdDate?: Date;
+  _updatedDate?: Date;
+  /** @wixFieldType text */
+  salesOfficerAction?: string;
+  /** @wixFieldType text */
+  officerNotes?: string;
+  /** @wixFieldType text */
+  rootCauseAnalysis?: string;
+  /** @wixFieldType number */
+  weightAdjustment?: number;
+  /** @wixFieldType text */
+  revisedReasonCode?: string;
+  /** @wixFieldType datetime */
+  feedbackTimestamp?: Date | string;
+}
+
+
+/**
  * Collection ID: leads
  * Interface for CustomerLeads
  */
